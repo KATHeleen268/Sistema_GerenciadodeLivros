@@ -16,6 +16,8 @@ struct Catalogo {
 
 void adicionarLivro(struct Catalogo *catalogo);
 int buscarISBN(struct Catalogo catalogo, char busca[]);
+void listarLivrosTodos(struct Catalogo catalogo);
+void listandoPorAssunto(struct Catalogo catalogo, char assuntoBuscado[]);
 
 int main( int argc, char * argv[] ) {
     struct Catalogo livrosCatalogo;
@@ -54,9 +56,15 @@ int main( int argc, char * argv[] ) {
                break;
             }
             case 3:
+                listarLivrosTodos(livrosCatalogo);
                break;
-            case 4:
+            case 4: {
+                char AssuntoBuscado[120];
+                printf("Digite o assunto desejado: ");
+                scanf(" %[^\n]", AssuntoBuscado);
+                listandoPorAssunto(livrosCatalogo, AssuntoBuscado);
                break;
+            }
             default:
                printf("Opção inválida.\n");
 
@@ -92,4 +100,45 @@ int buscarISBN(struct Catalogo catalogo, char busca[]) {
         }
     }
     return -1;
+}
+
+void listarLivrosTodos(struct Catalogo catalogo) {
+    if(catalogo.quantidadeLivros == 0) {
+        printf("Nenhum livro cadastrado ainda. \n");
+        return;
+    }
+
+    printf(" \n Listando todos os livros: \n");
+    for(int i = 0; i < catalogo.quantidadeLivros; i++) {
+        printf("\n Livro %d: \n", i + 1);
+        printf("Título: %s\n", catalogo.livros[i].titulo);
+        printf("Autor: %s\n", catalogo.livros[i].autor);
+        printf("ISBN: %s\n", catalogo.livros[i].ISBN);
+        printf("Ano de publicação: %d\n", catalogo.livros[i].anopublicacao);
+        printf("Assunto: %s\n", catalogo.livros[i].assunto);
+   }
+}
+
+void listandoPorAssunto(struct Catalogo catalogo, char assuntoBuscado[]){
+    int livroEncontrado = 0;
+
+    for(int i = 0; i < catalogo.quantidadeLivros; i++) {
+        if(strcmp(catalogo.livros[i].assunto, assuntoBuscado) == 0) {
+            if(!livroEncontrado) {
+                printf("\n Livros com o assunto \"%s\":\n", assuntoBuscado);
+            }
+            
+            livroEncontrado = 1;
+            printf("\n Livro %d: \n", i + 1);
+            printf("Título: %s\n", catalogo.livros[i].titulo);
+            printf("Autor: %s\n", catalogo.livros[i].autor);
+            printf("ISBN: %s\n", catalogo.livros[i].ISBN);
+            printf("Ano de publicação: %d\n", catalogo.livros[i].anopublicacao);
+            printf("Assunto: %s\n", catalogo.livros[i].assunto);
+        }
+    }
+    
+    if(!livroEncontrado) {
+        printf("Nenhum livro com o assunto \"%s\" foi encontrado.\n", assuntoBuscado);
+    }
 }
